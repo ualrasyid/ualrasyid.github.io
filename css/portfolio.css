@@ -1,0 +1,61 @@
+/* Selected ArtStation work, using the existing Event Horizon design tokens. */
+.portfolio { border-bottom: 1px solid var(--line); }
+.artwork-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 32px; row-gap: 54px; }
+.artwork-card { min-width: 0; }
+.artwork-cover { position: relative; display: block; overflow: hidden; aspect-ratio: 16 / 9; border: 1px solid #3b465a; border-radius: 6px; background: #111827; isolation: isolate; }
+.artwork-cover::after { position: absolute; inset: 0; content: ''; pointer-events: none; background: linear-gradient(180deg, #02050c50, transparent 34%, transparent 66%, #02050c55); }
+.artwork-cover img { width: 100%; height: 100%; object-fit: cover; transition: transform .65s var(--ease); }
+.artwork-cover:hover img { transform: scale(1.035); }
+.artwork-cover:focus-visible { outline-offset: 6px; }
+.artwork-type, .artwork-video { position: absolute; z-index: 1; color: #e9effb; background: #080b12e8; border: 1px solid #536078; border-radius: 3px; font-size: 9px; letter-spacing: 1.2px; padding: 7px 10px; line-height: 1.2; }
+.artwork-type { top: 18px; left: 18px; }
+.artwork-video { left: 18px; bottom: 18px; display: inline-flex; align-items: center; gap: 8px; }
+.artwork-video .icon { width: 12px; height: 12px; }
+.artwork-open { position: absolute; z-index: 1; right: 18px; bottom: 18px; width: 40px; height: 40px; border-radius: 50%; border: 1px solid #c4d4f2b0; background: #080b12c9; color: #f0f4fc; display: grid; place-items: center; transition: background .2s; }
+.artwork-cover:hover .artwork-open { background: #263958; }
+.artwork-caption { padding-top: 23px; }
+.artwork-kicker { font-size: 9px; letter-spacing: 1px; line-height: 1.8; color: #a4b4cf; }
+.artwork-caption h3 { margin-top: 8px; font-size: 26px; }
+.artwork-caption h3 a { display: flex; justify-content: space-between; gap: 15px; align-items: center; min-height: 44px; }
+.artwork-caption h3 .icon { color: var(--accent); width: 19px; height: 19px; }
+.artwork-caption h3 a:hover { color: #c3d7ff; }
+.artwork-description { color: var(--muted); max-width: 490px; font-size: 14px; line-height: 1.85; margin-top: 8px; }
+.artwork-source { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; margin-top: 13px; font-size: 11px; color: #bfceeb; }
+.artwork-source .icon { width: 14px; height: 14px; }
+.artwork-source:hover { color: #f0f4fc; }
+.portfolio-archive { margin-top: 36px; min-height: 44px; color: #bfceeb; }
+@media (max-width: 800px) {
+  .artwork-grid { gap: 38px 24px; }
+  .artwork-type, .artwork-video { font-size: 8px; letter-spacing: .8px; padding: 6px 8px; }
+  .artwork-type { top: 12px; left: 12px; }
+  .artwork-video { bottom: 12px; left: 12px; }
+  .artwork-open { bottom: 12px; right: 12px; width: 34px; height: 34px; }
+  .artwork-caption h3 { font-size: 23px; }
+  .artwork-kicker { font-size: 8px; }
+  .artwork-description { font-size: 13px; }
+  .desktop-nav { gap: 20px; }
+}
+@media (max-width: 600px) {
+  .artwork-grid { grid-template-columns: 1fr; gap: 36px; }
+  .artwork-caption { padding-top: 18px; }
+  .artwork-caption h3 { font-size: 25px; }
+  .artwork-kicker { font-size: 8px; letter-spacing: .8px; }
+  .artwork-description { font-size: 13px; }
+  .artwork-source { font-size: 11px; margin-top: 9px; }
+  .portfolio-archive { font-size: 11px; margin-top: 29px; }
+}
+@media (prefers-reduced-motion: reduce) { .artwork-cover:hover img { transform: none; } }
+
+/* The poster only becomes a media player after an explicit Play action. */
+.artwork-media { position: relative; aspect-ratio: 16 / 9; min-width: 0; }
+.video-trigger { width: 100%; height: 100%; padding: 0; text-align: left; cursor: pointer; }
+.video-trigger .artwork-open { top: 50%; left: 50%; right: auto; bottom: auto; transform: translate(-50%, -50%); width: 62px; height: 62px; background: #080b12b8; border-color: #e7efffd9; box-shadow: 0 4px 30px #0005; }
+.video-trigger .artwork-open .icon { width: 26px; height: 26px; margin-left: 3px; }
+.video-trigger:hover .artwork-open, .video-trigger:focus-visible .artwork-open { background: #253c60e8; }
+.portfolio-player { display: block; width: 100%; height: 100%; aspect-ratio: 16 / 9; border: 1px solid #4a5a74; border-radius: 6px; background: #020408; object-fit: contain; }
+.portfolio-player:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
+.video-feedback { position: absolute; top: 12px; left: 12px; right: 12px; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; border: 1px solid #536078; border-radius: 4px; background: #080b12ed; color: #e9effb; font-size: 11px; line-height: 1.5; pointer-events: none; }
+.video-feedback[hidden] { display: none; }
+.video-retry { flex-shrink: 0; padding: 10px 13px; min-height: 44px; border: 1px solid #829cc6; border-radius: 4px; background: #263958; font-size: 11px; pointer-events: auto; }
+.video-retry[hidden] { display: none; }
+@media (max-width: 600px) { .video-trigger .artwork-open { width: 54px; height: 54px; } .video-feedback { font-size: 10px; top: 8px; left: 8px; right: 8px; padding: 8px; } }

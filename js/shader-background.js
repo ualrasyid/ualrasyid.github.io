@@ -2,24 +2,46 @@
 // Translated from Shadertoy "Gargantua" into vanilla WebGL2
 
 document.addEventListener("DOMContentLoaded", () => {
+    const scene = document.getElementById('blackhole-scene');
+    if (!scene) return;
+    const motionButton = document.getElementById('motion-toggle');
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    let paused = reducedMotion.matches;
+    let inView = true;
+    let lost = false;
+    let raf = 0;
+    let lastFrame = 0;
+    let elapsed = 8;
+    const updateMotionButton = () => {
+        motionButton.setAttribute('aria-pressed', String(paused));
+        motionButton.querySelector('span').textContent = paused ? 'Resume motion' : 'Pause motion';
+        motionButton.querySelector('use').setAttribute('href', paused ? '#play-icon' : '#pause-icon');
+    };
     const canvas = document.createElement("canvas");
     canvas.id = "shader-background";
     // Setup canvas styling to act as a fixed background
-    canvas.style.position = "fixed";
+    canvas.style.position = "absolute";
     canvas.style.top = "0";
     canvas.style.left = "0";
     canvas.style.width = "100%";
     canvas.style.height = "100%";
-    canvas.style.zIndex = "-2";
+    canvas.style.zIndex = "0";
     canvas.style.pointerEvents = "none";
-    canvas.style.opacity = "0.8"; // Slightly transparent so it doesn't overpower the text
+    canvas.style.opacity = "1";
+    canvas.setAttribute('aria-hidden', 'true');
 
     // Insert right after the body tag
-    document.body.insertBefore(canvas, document.body.firstChild);
+    scene.appendChild(canvas);
 
     const gl = canvas.getContext("webgl2", { alpha: false, antialias: false, depth: false });
     if (!gl) {
-        console.warn("WebGL2 not supported, skipping shader background.");
+        canvas.remove();
+        motionButton.querySelector('span').textContent = 'Still universe';
+        return;
+    }
+    if (!gl.getExtension('EXT_color_buffer_float')) {
+        canvas.remove();
+        motionButton.querySelector('span').textContent = 'Still universe';
         return;
     }
 
@@ -403,7 +425,7 @@ document.addEventListener("DOMContentLoaded", () => {
         vec3 color = ColorFetch(uv);
         
         color += GetBloom(uv) * 0.08;
-        color *= 200.0;
+        color *= 125.0;
         
         // Tonemapping and color grading
         color = pow(color, vec3(1.5));
@@ -415,6 +437,8 @@ document.addEventListener("DOMContentLoaded", () => {
         color = saturate(color * 1.01);
         color = pow(color, vec3(0.7 / 2.2));
 
+        // Cool, restrained grading for the portfolio's event horizon.
+        color *= vec3(0.64, 0.80, 1.0);
         FragColor = vec4(color, 1.0);
     }
     `;
@@ -437,13 +461,17 @@ document.addEventListener("DOMContentLoaded", () => {
         const program = gl.createProgram();
         const vShader = createShader(gl, gl.VERTEX_SHADER, vs);
         const fShader = createShader(gl, gl.FRAGMENT_SHADER, fs);
+        if (!vShader || !fShader) { gl.deleteProgram(program); return null; }
         gl.attachShader(program, vShader);
         gl.attachShader(program, fShader);
         gl.linkProgram(program);
         if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
             console.error(gl.getProgramInfoLog(program));
+            gl.deleteProgram(program);
             return null;
         }
+        gl.deleteShader(vShader);
+        gl.deleteShader(fShader);
         return program;
     }
 
@@ -473,7 +501,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const fbo = gl.createFramebuffer();
         gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
         gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
-
+        if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) {
+            gl.deleteTexture(tex); gl.deleteFramebuffer(fbo);
+            throw new Error('Float framebuffer is not supported');
+        }
         return { fbo, tex, width, height };
     }
 
@@ -485,6 +516,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const progC = createProgram(gl, vsSource, bufferC);
     const progD = createProgram(gl, vsSource, bufferD);
     const progImage = createProgram(gl, vsSource, imagePass);
+    if (![progA, progB, progC, progD, progImage].every(Boolean)) {
+        canvas.remove();
+        motionButton.querySelector('span').textContent = 'Still universe';
+        return;
+    }
 
     const positionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
@@ -517,74 +553,57 @@ document.addEventListener("DOMContentLoaded", () => {
     let fboA, fboB, fboC, fboD;
 
     // Scale down resolution to improve performance, this is a heavy shader
-    const resolutionScale = 0.5;
+    const resolutionScale = matchMedia('(max-width: 600px)').matches ? 0.6 : 0.55;
+    const deleteFBO = buffer => {
+        if (!buffer) return;
+        gl.deleteFramebuffer(buffer.fbo); gl.deleteTexture(buffer.tex);
+    };
 
     function resize() {
         // limit max resolution for performance
-        let w = window.innerWidth * resolutionScale;
-        let h = window.innerHeight * resolutionScale;
+        let w = scene.clientWidth * resolutionScale;
+        let h = scene.clientHeight * resolutionScale;
 
         if (w > 1200) {
             h = h * (1200 / w);
             w = 1200;
         }
 
-        w = Math.floor(w);
-        h = Math.floor(h);
+        w = Math.max(1, Math.floor(w));
+        h = Math.max(1, Math.floor(h));
 
         if (canvas.width !== w || canvas.height !== h) {
             canvas.width = w;
             canvas.height = h;
-            fboA = createFBO(gl, w, h);
-            fboB = createFBO(gl, w, h);
-            fboC = createFBO(gl, w, h);
-            fboD = createFBO(gl, w, h);
+            [fboA, fboB, fboC, fboD].forEach(deleteFBO);
+            try {
+                fboA = createFBO(gl, w, h);
+                fboB = createFBO(gl, w, h);
+                fboC = createFBO(gl, w, h);
+                fboD = createFBO(gl, w, h);
+            } catch {
+                lost = true; canvas.hidden = true;
+                scene.classList.remove('shader-ready');
+                motionButton.disabled = true;
+                motionButton.querySelector('span').textContent = 'Still universe';
+            }
         }
     }
-    window.addEventListener("resize", resize);
     resize();
 
-    let targetMouseX = canvas.width * 0.5;
-    let targetMouseY = canvas.height * 0.5;
-    let currentMouseX = canvas.width * 0.5;
-    let currentMouseY = canvas.height * 0.5;
+    const centerX = () => matchMedia('(max-width: 600px)').matches ? 0.47 : 0.14;
+    let targetMouseX = centerX();
+    let targetMouseY = 0.5;
+    let currentMouseX = centerX();
+    let currentMouseY = 0.5;
     let mouseDown = 0;
 
-    function updateScroll() {
-        const scrollContainer = document.querySelector('.md\\:overflow-y-auto');
-        let scrollTop = 0;
-        let maxScroll = 1;
-
-        if (scrollContainer && window.innerWidth >= 768) {
-            scrollTop = scrollContainer.scrollTop;
-            maxScroll = scrollContainer.scrollHeight - scrollContainer.clientHeight;
-        } else {
-            scrollTop = window.scrollY;
-            maxScroll = document.body.scrollHeight - window.innerHeight;
-        }
-
-        let progress = 0;
-        if (maxScroll > 0) {
-            progress = scrollTop / maxScroll;
-        }
-
-        // Map progress to mouse coordinates to simulate looking around
-        // Starts negative (moves camera left, blackhole to the right)
-        // Ends positive (moves camera right, blackhole to the left)
-        targetMouseX = canvas.width * (-0.01 + progress * 1.2);
-        targetMouseY = canvas.height * (0.5 - progress * 0.5);
-    }
-
-    const scrollContainerDef = document.querySelector('.md\\:overflow-y-auto');
-    if (scrollContainerDef) scrollContainerDef.addEventListener("scroll", updateScroll);
-    window.addEventListener("scroll", updateScroll);
-    window.addEventListener("resize", updateScroll);
-    updateScroll();
-
-    window.addEventListener("mousedown", () => mouseDown = 1.0);
-    window.addEventListener("mouseup", () => mouseDown = 0.0);
-
-    const startTime = Date.now();
+    document.querySelector('.hero').addEventListener('pointermove', event => {
+        if (paused || event.pointerType === 'touch') return;
+        const bounds = scene.getBoundingClientRect();
+        targetMouseX = centerX() + (event.clientX / innerWidth - 0.5) * 0.12;
+        targetMouseY = 0.5 + ((event.clientY - bounds.top) / bounds.height - 0.5) * 0.1;
+    }, { passive: true });
 
     function setUniforms(program) {
         gl.useProgram(program);
@@ -592,12 +611,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const locTime = gl.getUniformLocation(program, "iTime");
         const locMouse = gl.getUniformLocation(program, "iMouse");
 
-        currentMouseX += (targetMouseX - currentMouseX) * 0.05;
-        currentMouseY += (targetMouseY - currentMouseY) * 0.05;
-
         gl.uniform3f(locRes, canvas.width, canvas.height, 1.0);
-        gl.uniform1f(locTime, (Date.now() - startTime) / 1000.0);
-        gl.uniform4f(locMouse, currentMouseX, currentMouseY, mouseDown, 0.0);
+        gl.uniform1f(locTime, elapsed);
+        gl.uniform4f(locMouse, currentMouseX * canvas.width, currentMouseY * canvas.height, mouseDown, 0.0);
 
         const posLoc = gl.getAttribLocation(program, "a_position");
         gl.enableVertexAttribArray(posLoc);
@@ -605,8 +621,10 @@ document.addEventListener("DOMContentLoaded", () => {
         gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
     }
 
-    function render() {
-        if (!fboA) return requestAnimationFrame(render);
+    function renderFrame() {
+        if (!fboA || lost) return;
+        currentMouseX += (targetMouseX - currentMouseX) * 0.08;
+        currentMouseY += (targetMouseY - currentMouseY) * 0.08;
 
         // --- Pass A ---
         gl.bindFramebuffer(gl.FRAMEBUFFER, fboA.fbo);
@@ -650,8 +668,60 @@ document.addEventListener("DOMContentLoaded", () => {
         gl.uniform1i(gl.getUniformLocation(progImage, "iChannel3"), 3);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
 
-        requestAnimationFrame(render);
+        scene.classList.add('shader-ready');
     }
-
-    render();
+    function tick(now) {
+        raf = 0;
+        if (paused || document.hidden || !inView || lost) return;
+        // A 30 fps cap keeps a background effect from consuming an entire GPU budget.
+        if (now - lastFrame >= 1000 / 30) {
+            elapsed += Math.min((now - lastFrame) / 1000, 0.05);
+            lastFrame = now;
+            renderFrame();
+        }
+        raf = requestAnimationFrame(tick);
+    }
+    function syncAnimation() {
+        cancelAnimationFrame(raf); raf = 0;
+        lastFrame = performance.now();
+        if (!paused && !document.hidden && inView && !lost) raf = requestAnimationFrame(tick);
+    }
+    motionButton.disabled = lost;
+    updateMotionButton();
+    motionButton.addEventListener('click', () => {
+        paused = !paused; updateMotionButton(); syncAnimation();
+    });
+    reducedMotion.addEventListener('change', event => {
+        paused = event.matches; updateMotionButton(); syncAnimation();
+    });
+    document.addEventListener('visibilitychange', syncAnimation);
+    const sceneObserver = new IntersectionObserver(entries => {
+        inView = entries[0].isIntersecting; syncAnimation();
+    }, { threshold: 0.01 });
+    sceneObserver.observe(scene);
+    let resizeRaf = 0;
+    const resizeObserver = new ResizeObserver(() => {
+        cancelAnimationFrame(resizeRaf);
+        resizeRaf = requestAnimationFrame(() => { resize(); targetMouseX = centerX(); currentMouseX = centerX(); renderFrame(); });
+    });
+    resizeObserver.observe(scene);
+    canvas.addEventListener('webglcontextlost', event => {
+        event.preventDefault(); lost = true; syncAnimation();
+        canvas.hidden = true; scene.classList.remove('shader-ready');
+        motionButton.disabled = true;
+        motionButton.querySelector('span').textContent = 'Still universe';
+    });
+    renderFrame(); syncAnimation();
+    window.addEventListener('pageshow', event => {
+        if (event.persisted) { renderFrame(); syncAnimation(); }
+    });
+    window.addEventListener('pagehide', event => {
+        cancelAnimationFrame(raf); cancelAnimationFrame(resizeRaf);
+        if (event.persisted) return;
+        sceneObserver.disconnect(); resizeObserver.disconnect();
+        [fboA, fboB, fboC, fboD].forEach(deleteFBO);
+        [noiseTex, colorTex].forEach(tex => gl.deleteTexture(tex));
+        [progA, progB, progC, progD, progImage].forEach(program => gl.deleteProgram(program));
+        gl.deleteBuffer(positionBuffer);
+    }, { once: true });
 });

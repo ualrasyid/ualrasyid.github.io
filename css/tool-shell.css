@@ -1,0 +1,5 @@
+.orbit-bar{box-sizing:border-box;display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:48px;padding:7px 24px;background:#080b12;color:#dbe6f9;border-bottom:1px solid #26344d;font:13px/1.4 Arial,sans-serif}
+.orbit-bar a{display:flex;gap:10px;align-items:center;color:inherit;text-decoration:none;min-height:34px}
+.orbit-bar img{display:block}.orbit-bar a>span:first-of-type{font-size:18px;letter-spacing:-1px;font-weight:600}.orbit-return{color:#acbedc;font-size:11px;margin-left:15px}.orbit-tool-name{font:9px Consolas,monospace;letter-spacing:1.5px;color:#9bafcf}.orbit-bar a:focus-visible{outline:2px solid #a5c3ff;outline-offset:3px}.orbit-bar a:hover .orbit-return{color:white}
+@media(max-width:480px){.orbit-bar{padding:6px 14px;gap:9px}.orbit-return{margin-left:3px;font-size:10px}.orbit-tool-name{font-size:8px;letter-spacing:.8px}.orbit-bar a{gap:7px}.orbit-bar img{width:24px;height:24px}}
+@media print{.orbit-bar{display:none!important}}
