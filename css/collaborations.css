@@ -1,0 +1,30 @@
+/* Production credits extend the existing blackhole palette without filtering artwork. */
+.collaborations { padding-bottom: 72px; margin-bottom: 64px; border-bottom: 1px solid var(--line); scroll-margin-top: 100px; }
+.collaborations .section-heading h2 { font-size: clamp(30px, 3.2vw, 48px); }
+.collaboration-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; align-items: start; }
+.collaboration-card { min-width: 0; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: #10151f; }
+.collaboration-cover { display: block; position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: #080b12; }
+.collaboration-cover img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.collaboration-cover:focus-visible { outline: 2px solid var(--accent); outline-offset: -4px; }
+.collaboration-platform { position: absolute; bottom: 12px; left: 12px; padding: 7px 9px; border: 1px solid #536078; border-radius: 3px; color: #e9effb; background: #080b12ed; font-size: 9px; letter-spacing: .8px; }
+.collaboration-body { padding: 24px; }
+.collaboration-body h3 { font-size: 23px; line-height: 1.3; letter-spacing: -.5px; min-height: 60px; }
+.collaboration-body h3 span { display: block; font-size: 16px; font-weight: 400; color: var(--muted); margin-top: 5px; }
+.collaboration-role { color: var(--accent); font-size: 14px; margin-top: 18px; }
+.collaboration-intro { color: var(--muted); font-size: 14px; line-height: 1.8; margin-top: 10px; min-height: 76px; }
+.collaboration-tools { color: #b8c7df; font-size: 9px; line-height: 1.9; letter-spacing: .6px; min-height: 36px; margin-top: 18px; }
+.contribution-details { border-top: 1px solid var(--line); margin-top: 20px; }
+.contribution-details summary { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 16px 0; min-height: 48px; cursor: pointer; color: #e3ebfa; font-size: 14px; list-style: none; }
+.contribution-details summary::-webkit-details-marker { display: none; }
+.contribution-details summary span { color: var(--accent); font-size: 22px; }
+.contribution-details[open] summary span { transform: rotate(45deg); }
+.contribution-details summary:hover { color: var(--accent); }
+.contribution-details summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.contribution-details ul { list-style: disc; padding: 0 0 12px 18px; color: #b8c7df; font-size: 14px; line-height: 1.8; }
+.contribution-details li + li { margin-top: 10px; }
+.collaboration-credit { display: inline-flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; color: #b8c7df; font-size: 11px; line-height: 1.7; }
+.collaboration-credit:hover { color: #fff; }
+.collaboration-credit .icon { width: 13px; height: 13px; flex-shrink: 0; }
+.collaboration-note { color: var(--muted); max-width: 850px; font-size: 12px; line-height: 1.9; margin-top: 28px; }
+@media (max-width: 1000px) { .collaboration-grid { grid-template-columns: 1fr; gap: 28px; } .collaboration-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .collaboration-body h3, .collaboration-intro, .collaboration-tools { min-height: 0; } }
+@media (max-width: 600px) { .collaborations { padding-bottom: 48px; margin-bottom: 42px; } .collaboration-card { display: block; } .collaboration-body { padding: 22px; } .collaboration-grid { gap: 24px; } }
