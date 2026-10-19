@@ -1,0 +1,14 @@
+/* Static content is visible by default. JS arms only supported project reveals. */
+:root{--scroll-progress:0;--scene-drift:0px}
+html[data-scroll-motion=on] .project-reveal-pending{opacity:0;pointer-events:none}
+html[data-scroll-motion=on] .project-reveal-pending:focus-within{opacity:1;pointer-events:auto}
+html[data-scroll-motion=on] .site-header::after{content:'';position:absolute;inset:auto 0 -1px;height:2px;pointer-events:none;background:linear-gradient(90deg,#0071e3,#93b9f4);transform:scaleX(var(--scroll-progress));transform-origin:left}
+@media(min-width:801px) and (prefers-reduced-motion:no-preference){
+  html[data-scroll-motion=on] .blackhole-scene{transform:translate3d(0,var(--scene-drift),0) scale(1.06)}
+}
+@media(prefers-reduced-motion:reduce){
+  html[data-scroll-motion] .site-header::after{display:none}
+  html[data-scroll-motion] .blackhole-scene{transform:none!important}
+  html[data-scroll-motion] .project-reveal-pending{opacity:1!important;pointer-events:auto}
+}
+@media print{html[data-scroll-motion] .site-header::after{display:none}html[data-scroll-motion] .blackhole-scene{transform:none!important}html[data-scroll-motion] .project-reveal-pending{opacity:1!important;pointer-events:auto}}

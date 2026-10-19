@@ -1,0 +1,11 @@
+/* Only this headline: 70% of its original responsive font sizes. */
+.hero h2.hero-headline-smaller { font-size: clamp(39.2px, 4.34vw, 61.6px); }
+@media (max-width: 1100px) {
+  .hero h2.hero-headline-smaller { font-size: 47.6px; }
+}
+@media (max-width: 800px) {
+  .hero h2.hero-headline-smaller { font-size: 43.4px; }
+}
+@media (max-width: 600px) {
+  .hero h2.hero-headline-smaller { font-size: 39.2px; }
+}

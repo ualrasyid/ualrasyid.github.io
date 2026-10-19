@@ -1,0 +1,39 @@
+/* Compact editorial production list: same left/right placement, natural height. */
+.production.section-space{max-width:1120px;padding-block:80px}
+.production .section-heading{margin-bottom:32px}
+.production .section-heading h2{font-size:clamp(32px,3.3vw,46px)}
+.production .section-intro{font-size:17px;margin-top:16px}
+.production .production-panels{display:flex;flex-direction:column;gap:0}
+.production .production-panel{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);align-items:center;gap:48px;min-height:0;padding-block:36px;border-bottom:1px solid #e5e5e9;scroll-margin-top:8px;transform-origin:center}
+.production .production-panel:first-child{padding-top:0}
+.production .production-panel:last-child{border-bottom:0;padding-bottom:0}
+.production .production-image{margin:0;border-radius:18px;aspect-ratio:16/9}
+.production .production-copy{padding:0;min-width:0;max-width:none}
+.production .project-category{font-size:10px;letter-spacing:.025em}
+.production .production-copy h3{font-size:clamp(28px,2.6vw,36px);line-height:1.1;min-height:0;margin-top:8px}
+.production .production-copy h3 br{display:none}
+.production .project-role{margin-top:12px;font-size:15px}
+.production .project-description{min-height:0;margin-top:8px;font-size:15px;line-height:1.6;max-width:470px}
+.production .contribution-details{margin-top:16px;border-bottom:0}
+.production .contribution-details summary{font-size:13px;min-height:48px}
+.production .contribution-details summary>span{width:24px;height:24px;font-size:19px}
+.production .contribution-details .project-software{min-height:0;margin:0 0 16px;font-size:10px;line-height:1.7;color:var(--muted)}
+.production .contribution-details ul{font-size:13px;line-height:1.7;padding-bottom:16px}
+.production .production-copy>.line-link{margin-top:4px;font-size:13px;min-height:44px}
+.production .production-credit{margin-top:32px;font-size:11px;line-height:1.7;max-width:850px}
+@media(max-width:1000px){
+  .production .production-panel{gap:32px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .production .production-copy h3{font-size:30px}
+}
+@media(max-width:700px){
+  .production.section-space{padding-block:64px}
+  .production .section-heading h2{font-size:34px}
+  .production .section-intro{font-size:16px}
+  .production .production-panel{grid-template-columns:1fr;gap:22px;padding-block:28px;max-width:none;width:100%;scroll-margin-top:4px}
+  .production .production-image{border-radius:16px}
+  .production .production-copy{padding-inline:2px}
+  .production .production-copy h3{font-size:29px}
+  .production .project-role{font-size:15px;margin-top:10px}
+  .production .project-description{font-size:14px;max-width:none}
+  .production .production-credit{font-size:11px;margin-top:28px}
+}

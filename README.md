@@ -1,47 +1,39 @@
-# Rasyid — Event Horizon
+# Al Rasyid — Apple-inspired gallery concept
 
-Personal portfolio for Ubaidillah Al Rasyid. Buildless HTML, CSS, and JavaScript, with the original WebGL2 black hole adapted for the new layout.
+Contribution notes: `js/contribution-notes.js` progressively replaces each inline disclosure trigger with a button opening a native modal dialog styled by `css/contribution-notes.css`. The original role, description, software and responsibility list are reused without editing their text. The page does not expand. Native Escape, close button and backdrop click dismiss the notes, return focus and preserve page position; long notes scroll inside the panel. Without dialog support or JavaScript, the original native details remain available.
 
-## Preview locally
+Current scroll behavior: production projects are pre-armed only when JavaScript motion is supported and enabled, then appear individually from opacity 0 with a .97-to-1 popup on entering their own scroll band. Durations remain 1200ms desktop / 1000ms compact. Revealed projects stay visible. Other section entrances use transforms only, avoiding the old visible-to-pale flash. Pause, reduced motion, print and keyboard access immediately expose pending content. No JavaScript means normal visible static content.
 
-From this folder, run:
+A buildless personal portfolio: HTML, CSS, and vanilla JavaScript. This local edition translates the spacious hierarchy, compact navigation, browsable lineup, and progressive detail of https://www.apple.com/my/ipad/ into Rasyid's own blackhole identity. It does not reuse Apple imagery, trademarks, copy, or source code.
 
-```powershell
-python -m http.server 8765 --bind 127.0.0.1
-```
+## Preview and editing
 
-Open http://127.0.0.1:8765/ in your browser. Stop the server with Ctrl+C. Use a web server rather than opening the HTML file directly; the two retained applications use JavaScript modules.
+Serve this directory on 127.0.0.1:8765. No build or installation required. Keep CVbuilder and ImageResize folder names intact.
 
-## Publish
+- `index.html`: verified production roles, personal films, imagery, credits, and links.
+- `css/apple-concept.css`: active light/neutral design system, dark blackhole stage and responsive layouts.
+- `css/explorations-grid.css`: equal two-column film grid (one column on mobile), pearl rounded gallery container and transparent play overlays.
+- `css/production-hover.css`: independent production-row hover and keyboard-focus surfaces.
+- `css/hero-heading-size.css`: the hero headline's 30% smaller responsive type sizes.
+- `css/production-story.css`: compact, naturally sized production rows, image left/copy right on desktop and stacked below 700px. Software labels and full responsibilities live inside native contribution disclosures. Independent scroll-triggered project entrances are described above; no sibling timer or viewport-height spacer per project.
+- `js/apple-concept.js`: mobile menu, active navigation and offscreen player pausing.
+- `css/scroll-motion.css` and `js/scroll-motion.js`: native once-only scroll entrances, staggered headings/cards, desktop blackhole drift and reading-progress line. No animation dependency. The existing Pause motion button pauses these effects too; reduced-motion and low-core devices receive static content. Mobile has shorter entrances and no parallax. Keyboard focus immediately settles its animated container. Content is never hidden waiting for JavaScript.
+- `js/portfolio-video.js`: retained click-to-load films, native controls, loading/error feedback, retry and playback coordination.
+- `js/shader-background.js`: retained original multipass WebGL2 blackhole, pause control and offscreen lifecycle. Preserve the original attribution to Shadertoy's Gargantua; its original authorship/license was not independently established. Check the original license before separate redistribution.
+- `assets/rasyid-avatar.jpg`: original-color portrait, no filter or blend mode.
+- `assets/collaborations/`: official promotional imagery; original source links remain on the page. CoComelon image: Netflix Jr. official Season 2 sneak peek, https://www.youtube.com/watch?v=kThz0o3Qqrw.
+- `assets/portfolio/sources.json`: personal-work media provenance.
 
-Upload the contents of this folder to any static host. Keep the `CVbuilder/` and `ImageResize/` folder names and asset paths unchanged. No build step is required. The site works both at a domain root and under a subdirectory.
+## Behavior
 
-## Edit
+Production work stays before personal explorations. All three production cards remain accessible, with contribution notes opening without expanding the page. Promotional images identify team productions, not individual asset breakdowns or client endorsements. Four personal films use an equal responsive grid with labelled play controls and ArtStation links. Videos only stream after Play; loading/error feedback and retry remain available. Starting another film or scrolling a film offscreen pauses playback.
 
-- `index.html`: profile, projects, contact details, social links.
-- `css/style.css`: design tokens, page layout, responsive styling.
-- `js/main.js`: mobile menu, active navigation, copy-email action.
-- `js/portfolio-video.js`: click-to-load inline video players, loading feedback, retry, and playback coordination.
-- `js/shader-background.js`: retained black hole shader and rendering lifecycle.
-- `assets/blackhole-mark.svg`: portfolio mark and favicon.
-- `assets/rasyid-avatar.jpg`: optimized photo, derived from the original supplied portrait.
-- `css/portfolio.css`: responsive ArtStation portfolio gallery.
-- `assets/portfolio/`: local images for the four selected artworks, with responsive JPEG sizes and a compact WebP image.
-- `assets/portfolio/sources.json`: original artwork URLs and image provenance.
-- `css/tool-shell.css` and `js/tool-shell.js`: return navigation and accessibility for the retained tools.
+The two existing tool applications remain untouched. No removed approach/contact section is reintroduced. Contact remains a mailto link in navigation and footer. The unreleased Markdown-to-PDF item is not displayed as an available tool.
 
-The landing page has no runtime JavaScript dependency. Its fonts load from Google Fonts with system fallbacks. CV Builder retains its existing Tailwind CDN and html2pdf dependencies. The compiled application bundles are retained because their editable source projects were not present in the original folder.
+Without the enhancement script, production details and source links remain usable; navigation links remain visible on small screens. Without JavaScript, an explanatory film message points visitors to ArtStation. With no WebGL2, a CSS still blackhole is shown. Reduced motion disables smooth scrolling and hover transitions and defaults the retained shader to a still frame; the explicit motion control remains available.
 
-## Motion and accessibility
+System fonts only. No new dependencies, analytics, accounts, or form service. Earlier Edition II and Orbit Archive CSS/JS files remain inactive for recovery; only the scripts/styles listed in index.html are loaded.
 
-Black hole animation is capped at 30 fps, pauses when outside the viewport or in a hidden tab, and defaults to a still frame for reduced-motion preferences. Pause/resume remains available. A CSS fallback is shown if WebGL2 or float framebuffer support is unavailable. Visible content never waits for animation or an intersection observer.
+## Publishing
 
-The shader retains the original file's attribution to Shadertoy's “Gargantua.” Its original authorship/license was not independently established in this rebuild; preserve the attribution and check the original shader's license before redistributing it separately.
-
-The mobile menu exposes its expanded state, closes with Escape, and supports keyboard focus. All contact and social links use the original profile's destinations. Markdown to PDF remains explicitly marked as planned.
-
-## ArtStation portfolio
-
-The four artworks supplied by the owner appear in the Portfolio section before the tools. Each cover has a Play button that loads its film directly inside the card using the browser's native video player. Titles and the text links below each card still open the corresponding ArtStation project in a new tab. Poster images are stored locally and lazy-loaded. The original published titles and software labels were verified on the supplied ArtStation pages.
-
-Video files stream from public ArtStation CDN URLs read from each artwork's own media player. They are not copied into this static package; internet access and continued availability of those CDN URLs are required. No video request is made before a visitor presses Play. Native controls provide pause, seek, volume, fullscreen, and inline playback on mobile. Starting a different film pauses the previous film. Films also pause when the tab is hidden or the page is left. A loading message, retry button, and retained ArtStation links cover connection failures. If video URLs change, update `data-video-src` in `index.html` and record the new source in `assets/portfolio/sources.json`.
+This buildless website is published from the repository's main branch through GitHub Pages. Local backup files and inactive design experiments are not required for deployment. Preview locally before publishing changes.

@@ -1,0 +1,84 @@
+/* An independent, non-interactive surface; never changes the row's geometry. */
+.production .production-panel {
+  position: relative;
+  isolation: isolate;
+}
+
+.production .production-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0 -20px;
+  z-index: -1;
+  border-radius: 30px;
+  /* Original charcoal blended 50% toward the white page. */
+  background: #85878a;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 350ms ease-in-out;
+}
+
+.production .production-panel:first-child::before { top: -20px; }
+.production .production-panel:last-child::before { bottom: -20px; }
+
+.production .production-panel,
+.production .production-copy h3,
+.production .project-category,
+.production .project-role,
+.production .project-description,
+.production .project-software,
+.production .contribution-details ul,
+.production .contribution-details summary,
+.production .contribution-button,
+.production .production-copy > .line-link {
+  transition: color 350ms ease-in-out, border-color 350ms ease-in-out;
+}
+
+/* Keyboard focus activates the same surface without sticky touch-hover states. */
+.production .production-panel:has(:focus-visible) {
+  --ink: #0b0e14;
+  --muted: #171b22;
+  --accent: #00254f;
+  --line: #53575e;
+  color: #0b0e14;
+}
+.production .production-panel:has(:focus-visible)::before { opacity: 1; }
+.production .production-panel :is(a, button, summary):focus-visible {
+  outline-color: #0071e3;
+}
+.production .production-panel:has(:focus-visible) :is(a, button, summary):focus-visible {
+  outline-color: #00254f;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .production .production-panel:hover {
+    --ink: #0b0e14;
+    --muted: #171b22;
+    --accent: #00254f;
+    --line: #53575e;
+    color: #0b0e14;
+  }
+  .production .production-panel:hover::before { opacity: 1; }
+}
+
+@media (max-width: 700px) {
+  .production .production-panel::before { left: -12px; right: -12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .production .production-panel,
+  .production .production-panel::before,
+  .production .production-panel .production-copy * {
+    transition: none;
+  }
+}
+
+@media print {
+  .production .production-panel::before { display: none; }
+  .production .production-panel {
+    --ink: #1d1d1f;
+    --muted: #64646b;
+    --accent: #0066cc;
+    --line: #d2d2d7;
+    color: #1d1d1f;
+  }
+}

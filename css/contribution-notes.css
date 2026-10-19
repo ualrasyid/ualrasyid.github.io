@@ -1,0 +1,31 @@
+/* Native modal notes preserve page position and the compact production rows. */
+html{scrollbar-gutter:stable}
+html.contribution-notes-open{overflow:hidden}
+.production .contribution-button{display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;min-height:48px;margin-top:16px;padding:0;background:transparent;border-top:1px solid var(--line);font-size:13px;font-weight:600;text-align:left}
+.contribution-button-plus{display:grid;place-items:center;flex-shrink:0;width:24px;height:24px;border-radius:50%;background:#e8e8ed;color:#3b3b40;font-size:19px;font-weight:400;transition:background-color .18s,color .18s}
+.contribution-button:hover .contribution-button-plus{background:#1d1d1f;color:#fff}
+.contribution-notes{position:fixed;inset:0;margin:auto;width:min(600px,calc(100% - 48px));max-width:none;max-height:calc(100svh - 64px);padding:0;border:1px solid #dcdce2;border-radius:24px;background:#fff;color:#1d1d1f;box-shadow:0 24px 90px #0b142436;overflow:hidden}
+.contribution-notes[open]{display:flex;flex-direction:column;animation:note-arrive .2s cubic-bezier(.22,1,.36,1)}
+.contribution-notes::backdrop{background:#0b142459;backdrop-filter:blur(3px)}
+.contribution-note-header{position:relative;flex-shrink:0;padding:30px 80px 24px 32px;border-bottom:1px solid #e8e8ed}
+.contribution-note-eyebrow{font-size:10px;line-height:1.5;letter-spacing:.08em;color:#64646b;font-weight:600;margin-bottom:12px}
+.contribution-note-title{font-size:32px;line-height:1.12;letter-spacing:-.04em;font-weight:650}
+.contribution-note-close{position:absolute;top:24px;right:24px;width:44px;height:44px;display:grid;place-items:center;padding:0;border-radius:50%;background:#f0f0f3;color:#424247;font-size:28px;line-height:1}
+.contribution-note-close:hover{background:#dedee5;color:#1d1d1f}
+.contribution-note-body{padding:26px 32px 32px;overflow-y:auto;overscroll-behavior:contain;min-height:0}
+.contribution-note-role{font-size:17px;font-weight:600;line-height:1.4;color:#0066cc}
+.contribution-note-description{font-size:15px;line-height:1.65;color:#64646b;margin-top:12px}
+.contribution-note-label{font-size:10px;font-weight:600;line-height:1.5;letter-spacing:.07em;color:#64646b;margin-top:26px}
+.contribution-note-software{font-size:13px;line-height:1.7;margin-top:8px;color:#424247}
+.contribution-note-list ul{padding:0 0 0 19px;margin:14px 0 0;font-size:15px;line-height:1.7;color:#424247}
+.contribution-note-list li+li{margin-top:12px}
+@keyframes note-arrive{from{opacity:.8;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
+@media(max-width:600px){
+  .contribution-notes{width:calc(100% - 28px);max-height:calc(100svh - 32px);border-radius:20px}
+  .contribution-note-header{padding:26px 72px 22px 24px}
+  .contribution-note-title{font-size:28px}
+  .contribution-note-close{top:18px;right:16px}
+  .contribution-note-body{padding:24px}
+  .contribution-note-list ul{font-size:14px}
+}
+@media(prefers-reduced-motion:reduce){.contribution-notes[open]{animation:none}}
